@@ -1,3 +1,4 @@
+from nearai.agents.environment import Environment
 # ============================================================
 # Carleton University Challenge: Implement the "quote" command.
 #
@@ -45,6 +46,12 @@ def handle_message(message: str) -> str:
     else:
         return "I'm sorry, I didn't understand your message."
 
-if __name__ == "__main__":
-   user_input = input("Enter a message for the agent: ")
-   print(handle_message(user_input))
+def run(env: Environment):
+    # Your agent code here
+    prompt = {"role": "system", "content": ""}
+    result = env.completion([prompt] + env.list_messages())
+    env.add_reply(result)
+    env.request_user_input()
+
+run(env)
+

@@ -17,6 +17,10 @@
 # ============================================================
 
 import requests
+import urllib3
+
+# Disable SSL warnings since we're using verify=False
+urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 def handle_message(message: str) -> str:
     message = message.lower()
@@ -26,14 +30,24 @@ def handle_message(message: str) -> str:
         # TODO: Implement the joke command.
         # Steps:
         #   1. Make a GET request to the joke API.
+        response = requests.get("https://official-joke-api.appspot.com/random_joke", verify=False)
+
+        if response.status_code == 200:
+            data = response.json()
+            setup = data.get("setup")
+            punchline = data.get("punchline")
+            
+            output = (f"{setup} {punchline}")
+            return output
         #   2. Verify the response status.
         #   3. Parse the JSON data to extract "setup" and "punchline".
         #   4. Return the joke as a formatted string.
-        pass
+        else:
+            print("try again")
     else:
         return "I'm sorry, I didn't understand your message."
 
 # Optional testing block:
-# if __name__ == "__main__":
-#    user_input = input("Enter a message for the agent: ")
-#    print(handle_message(user_input))
+if __name__ == "__main__":
+   user_input = input("Enter a message for the agent: ")
+   print(handle_message(user_input))

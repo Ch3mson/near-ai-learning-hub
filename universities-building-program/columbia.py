@@ -19,12 +19,25 @@
 
 import requests
 
+WEATHER_KEY = "4fce4250d574a98fce6a1867539175ea"
+
 def handle_message(message: str) -> str:
     message = message.lower()
     if "hello" in message:
         return "Hello, welcome to NEAR AI!"
     elif message.startswith("weather"):
         # TODO: Implement the weather command.
+        words = message.split()
+        city = words[1]
+        response = requests.get(f"https://api.openweathermap.org/data/2.5/weather?q={city}&appid={OPEN_AI_KEY}")
+
+        if response.status_code == 200:
+            data = response.json()
+            temperature = data.get("main", {}).get("temp")
+            condition = data.get("weather", [{}])[0].get("description")
+            return f"The weather in {city} is {temperature}°C and {condition}."
+        else:
+            return "Failed to fetch weather data. Please try again later."
         # Steps:
         #   1. Split the message to extract the city name.
         #   2. Verify that a city name was provided.
@@ -38,6 +51,6 @@ def handle_message(message: str) -> str:
         return "I'm sorry, I didn't understand your message."
 
 # Optional testing block:
-# if __name__ == "__main__":
-#    user_input = input("Enter a message for the agent: ")
-#    print(handle_message(user_input))
+if __name__ == "__main__":
+   user_input = input("Enter a message for the agent: ")
+   print(handle_message(user_input))
